@@ -103,7 +103,7 @@ Blessings.DropLoot = function(player, corpse, chance, skulled)
 	math.randomseed(os.time())
 	chance = chance * multiplier
 	Blessings.DebugPrint("DropLoot chance " .. chance)
-	for i = CONST_SLOT_HEAD, CONST_SLOT_AMMO do
+	for i = CONST_SLOT_HEAD, CONST_SLOT_EYE do
 		local item = player:getSlotItem(i)
 		if item then
 			local thisChance = item:isContainer() and chance or (chance / 10)

@@ -214,6 +214,7 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
 
 	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
+
 	return true;
 }
 
@@ -999,6 +1000,18 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 
 	player->initializePrey();
 	player->initializeTaskHunting();
+	
+	// Initialize StrainSystem
+	player->getStrainSystem().initialize(player);
+	
+	// Load strain system data after initialization
+	Database &db = Database::getInstance();
+	std::ostringstream strainQuery;
+	strainQuery << "SELECT `strain_value` FROM `players` WHERE `id` = " << player->getGUID();
+	if (auto strainResult = db.storeQuery(strainQuery.str())) {
+		auto &strainSystem = player->getStrainSystem();
+		strainSystem.setStrainValue(strainResult->getNumber<uint8_t>("strain_value"));
+	}
 }
 
 void IOLoginDataLoad::loadPlayerUpdateSystem(const std::shared_ptr<Player> &player) {

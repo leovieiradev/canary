@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<items>
+	<!-- Sharingan Eye Items -->
+	
+	<!-- 1 Tomoe Sharingan -->
+	<item id="50300" article="a" name="1 tomoe sharingan">
+		<attribute key="primarytype" value="other"/>
+		<attribute key="description" value="A crimson eye with a single tomoe pattern. Grants enhanced perception and basic combat abilities."/>
+		<attribute key="weight" value="10"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="skillsword" value="2"/>
+		<attribute key="skillaxe" value="2"/>
+		<attribute key="skillclub" value="2"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="skillshield" value="2"/>
+		<attribute key="skillfist" value="2"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="eye"/>
+		</attribute>
+	</item>
+	
+	<!-- 2 Tomoe Sharingan -->
+	<item id="50301" article="a" name="2 tomoe sharingan">
+		<attribute key="primarytype" value="other"/>
+		<attribute key="description" value="A crimson eye with two tomoe patterns. Provides improved perception and enhanced combat skills."/>
+		<attribute key="weight" value="10"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="skillsword" value="5"/>
+		<attribute key="skillaxe" value="5"/>
+		<attribute key="skillclub" value="5"/>
+		<attribute key="skilldist" value="5"/>
+		<attribute key="skillshield" value="5"/>
+		<attribute key="skillfist" value="5"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="eye"/>
+		</attribute>
+	</item>
+	
+	<!-- 3 Tomoe Sharingan -->
+	<item id="50302" article="a" name="3 tomoe sharingan">
+		<attribute key="primarytype" value="other"/>
+		<attribute key="description" value="A crimson eye with three tomoe patterns. The pinnacle of basic Sharingan evolution, granting superior combat abilities."/>
+		<attribute key="weight" value="10"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="skillsword" value="10"/>
+		<attribute key="skillaxe" value="10"/>
+		<attribute key="skillclub" value="10"/>
+		<attribute key="skilldist" value="10"/>
+		<attribute key="skillshield" value="10"/>
+		<attribute key="skillfist" value="10"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="eye"/>
+		</attribute>
+	</item>
+	
+	<!-- Mangekyou Sharingan -->
+	<item id="50303" article="a" name="mangekyou sharingan">
+		<attribute key="primarytype" value="other"/>
+		<attribute key="description" value="A legendary crimson eye with a unique kaleidoscope pattern. Grants immense power but at a great cost."/>
+		<attribute key="weight" value="10"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="skillsword" value="15"/>
+		<attribute key="skillaxe" value="15"/>
+		<attribute key="skillclub" value="15"/>
+		<attribute key="skilldist" value="15"/>
+		<attribute key="skillshield" value="15"/>
+		<attribute key="skillfist" value="15"/>
+		<attribute key="magiclevelpoints" value="5"/>
+		<attribute key="maxhitpointspercent" value="10"/>
+		<attribute key="maxmanapointspercent" value="10"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="eye"/>
+		</attribute>
+	</item>
+	
+	<!-- Eternal Mangekyou Sharingan -->
+	<item id="50304" article="an" name="eternal mangekyou sharingan">
+		<attribute key="primarytype" value="other"/>
+		<attribute key="description" value="The ultimate evolution of the Sharingan. A crimson eye with eternal power that never fades."/>
+		<attribute key="weight" value="10"/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="skillsword" value="20"/>
+		<attribute key="skillaxe" value="20"/>
+		<attribute key="skillclub" value="20"/>
+		<attribute key="skilldist" value="20"/>
+		<attribute key="skillshield" value="20"/>
+		<attribute key="skillfist" value="20"/>
+		<attribute key="magiclevelpoints" value="10"/>
+		<attribute key="maxhitpointspercent" value="20"/>
+		<attribute key="maxmanapointspercent" value="20"/>
+		<attribute key="absorbpercentall" value="5"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="eye"/>
+		</attribute>
+	</item>
+</items>

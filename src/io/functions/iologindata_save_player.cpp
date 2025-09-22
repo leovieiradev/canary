@@ -321,8 +321,13 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	for (int i = 1; i <= 8; i++) {
 		query << "`blessings" << i << "`"
-			  << " = " << static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i))) << ((i == 8) ? " " : ",");
+			  << " = " << static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i))) << ",";
 	}
+
+	// Save strain system data
+	const auto &strainSystem = player->getStrainSystem();
+	query << "`strain_value` = " << static_cast<uint32_t>(strainSystem.getStrainValue()) << " ";
+
 	query << " WHERE `id` = " << player->getGUID();
 
 	if (!db.executeQuery(query.str())) {

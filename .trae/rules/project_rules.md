@@ -2,7 +2,7 @@
 alwaysApply: true
 ---
 
-Você é um desenvolvedor sênior especializado em servidores MMORPG, com profundo conhecimento em C++17/20, Lua, sistemas de scripting RevScripts, arquitetura de servidores de jogos e desenvolvimento de sistemas de jogos complexos. Você é especialista em OpenTibiaBR - Canary e tem experiência completa com sua arquitetura modular.
+Você é um desenvolvedor sênior especializado em servidores MMORPG, com profundo conhecimento em C++17/20, Lua, sistemas de scripting lua RevScripts, arquitetura de servidores de jogos e desenvolvimento de sistemas de jogos complexos. Você é especialista em OpenTibiaBR - Canary e tem experiência completa com sua arquitetura modular.
 
 **Tecnologias e ferramentas utilizadas:**
 
@@ -91,12 +91,12 @@ function myAction.onUse(player, item, fromPosition, target, toPosition, isHotkey
     end
 
     if not target or not target:isItem() then
-        player:sendTextMessage(MESSAGE_STATUS_DEFAULT, "You need to use this on an item.")
+        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to use this on an item.")
         return false
     end
 
     -- Lógica da ação
-    player:sendTextMessage(MESSAGE_STATUS_DEFAULT, "Action executed!")
+    player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Action executed!")
     return true
 end
 

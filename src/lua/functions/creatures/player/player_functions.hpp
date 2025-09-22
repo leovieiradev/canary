@@ -397,5 +397,16 @@ class PlayerFunctions {
 	static int luaPlayerAddCustomOutfit(lua_State* L);
 	static int luaPlayerRemoveCustomOutfit(lua_State* L);
 
+	// Strain System Functions
+	static int luaPlayerActivateStrain(lua_State* L);
+	static int luaPlayerDeactivateStrain(lua_State* L);
+	static int luaPlayerIsStrainActive(lua_State* L);
+	static int luaPlayerGetStrainValue(lua_State* L);
+	static int luaPlayerAddStrain(lua_State* L);
+	static int luaPlayerRemoveStrain(lua_State* L);
+	static int luaPlayerGetStrainLevel(lua_State* L);
+
+
+
 	friend class CreatureFunctions;
 };

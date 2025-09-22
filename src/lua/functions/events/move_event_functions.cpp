@@ -146,6 +146,8 @@ int MoveEventFunctions::luaMoveEventSlot(lua_State* L) {
 			moveevent->setSlot(SLOTP_RING);
 		} else if (slotName == "ammo") {
 			moveevent->setSlot(SLOTP_AMMO);
+		} else if (slotName == "eye") {
+			moveevent->setSlot(SLOTP_EYE);
 		} else {
 			g_logger().warn("[MoveEventFunctions::luaMoveEventSlot] - "
 			                "Unknown slot type: {}",

@@ -77,7 +77,8 @@ Player::Player() :
 	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_storage(*this) {
+	m_storage(*this),
+	m_strainSystem() {
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -93,7 +94,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_storage(*this) {
+	m_storage(*this),
+	m_strainSystem() {
 	m_wheelPlayer.init();
 	m_animusMastery.init();
 }
@@ -577,7 +579,7 @@ uint16_t Player::attackRawTotal(uint16_t flatBonus, uint16_t equipment, uint16_t
 int32_t Player::getArmor() const {
 	int32_t armor = 0;
 
-	static constexpr Slots_t armorSlots[] = { CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_FEET, CONST_SLOT_RING, CONST_SLOT_AMMO };
+	static constexpr Slots_t armorSlots[] = { CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_FEET, CONST_SLOT_RING, CONST_SLOT_AMMO, CONST_SLOT_EYE };
 	for (const Slots_t &slot : armorSlots) {
 		const auto &inventoryItem = inventory[slot];
 		if (inventoryItem) {
@@ -4225,7 +4227,7 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 	if (allowPutItemsOnAmmoSlot && index == CONST_SLOT_AMMO) {
 		ret = RETURNVALUE_NOERROR;
 	} else {
-		if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING)) {
+		if ((slotPosition & SLOTP_HEAD) || (slotPosition & SLOTP_NECKLACE) || (slotPosition & SLOTP_BACKPACK) || (slotPosition & SLOTP_ARMOR) || (slotPosition & SLOTP_LEGS) || (slotPosition & SLOTP_FEET) || (slotPosition & SLOTP_RING) || (slotPosition & SLOTP_EYE)) {
 			ret = RETURNVALUE_CANNOTBEDRESSED;
 		} else if (slotPosition & SLOTP_TWO_HAND) {
 			ret = RETURNVALUE_PUTTHISOBJECTINBOTHHANDS;
@@ -4382,6 +4384,13 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 			break;
 		}
 
+		case CONST_SLOT_EYE: {
+			if (slotPosition & SLOTP_EYE) {
+				ret = RETURNVALUE_NOERROR;
+			}
+			break;
+		}
+
 		case CONST_SLOT_WHEREEVER:
 		case -1:
 			ret = RETURNVALUE_NOTENOUGHROOM;
@@ -4521,7 +4530,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 
 		std::vector<std::shared_ptr<Container>> containers;
 
-		for (uint32_t slotIndex = CONST_SLOT_FIRST; slotIndex <= CONST_SLOT_AMMO; ++slotIndex) {
+		for (uint32_t slotIndex = CONST_SLOT_FIRST; slotIndex <= CONST_SLOT_EYE; ++slotIndex) {
 			std::shared_ptr<Item> inventoryItem = inventory[slotIndex];
 			if (inventoryItem) {
 				if (inventoryItem == tradeItem) {
@@ -7913,6 +7922,9 @@ void Player::onThink(uint32_t interval) {
 	// Wheel of destiny major spells
 	wheel().onThink();
 
+	// Uchiha Strain System
+	m_strainSystem.onThink();
+
 	g_callbacks().executeCallback(EventCallback_t::playerOnThink, &EventCallback::playerOnThink, getPlayer(), interval);
 }
 
@@ -8671,7 +8683,7 @@ std::vector<std::shared_ptr<Container>> Player::getAllContainers(bool onlyFromMa
 	}
 
 	// Gather all containers from player inventory
-	for (uint32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO; ++slot) {
+	for (uint32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_EYE; ++slot) {
 		// Skip slots check if onlyFromMainBackpack is true
 		if (onlyFromMainBackpack) {
 			break;

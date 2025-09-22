@@ -28,6 +28,7 @@
 #include "creatures/players/components/player_vip.hpp"
 #include "creatures/players/components/wheel/wheel_gems.hpp"
 #include "creatures/players/components/player_attached_effects.hpp"
+#include "creatures/players/uchiha/strain_system.hpp"
 
 class House;
 class NetworkMessage;
@@ -406,6 +407,16 @@ public:
 	int32_t getStorageValue(uint32_t key) const;
 
 	std::shared_ptr<KV> kv() const;
+
+	// Strain System methods
+	Uchiha::StrainSystem& getStrainSystem() {
+		return m_strainSystem;
+	}
+	const Uchiha::StrainSystem& getStrainSystem() const {
+		return m_strainSystem;
+	}
+
+
 
 	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = std::move(newGroup);
@@ -1724,6 +1735,7 @@ private:
 	AnimusMastery m_animusMastery;
 	PlayerAttachedEffects m_playerAttachedEffects;
 	PlayerStorage m_storage;
+	Uchiha::StrainSystem m_strainSystem;
 
 	std::mutex quickLootMutex;
 

@@ -23,6 +23,7 @@ target_sources(
             players/management/ban.cpp
             players/management/waitlist.cpp
             players/storages/storages.cpp
+            players/uchiha/strain_system.cpp
             players/player.cpp
             players/components/player_achievement.cpp
             players/components/player_attached_effects.cpp

@@ -413,6 +413,17 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "removeCustomOutfit", PlayerFunctions::luaPlayerRemoveCustomOutfit);
 	Lua::registerMethod(L, "Player", "addCustomOutfit", PlayerFunctions::luaPlayerAddCustomOutfit);
 
+	// Strain System Functions
+	Lua::registerMethod(L, "Player", "activateStrain", PlayerFunctions::luaPlayerActivateStrain);
+	Lua::registerMethod(L, "Player", "deactivateStrain", PlayerFunctions::luaPlayerDeactivateStrain);
+	Lua::registerMethod(L, "Player", "isStrainActive", PlayerFunctions::luaPlayerIsStrainActive);
+	Lua::registerMethod(L, "Player", "getStrainValue", PlayerFunctions::luaPlayerGetStrainValue);
+	Lua::registerMethod(L, "Player", "addStrain", PlayerFunctions::luaPlayerAddStrain);
+	Lua::registerMethod(L, "Player", "removeStrain", PlayerFunctions::luaPlayerRemoveStrain);
+	Lua::registerMethod(L, "Player", "getStrainLevel", PlayerFunctions::luaPlayerGetStrainLevel);
+
+
+
 	GroupFunctions::init(L);
 	GuildFunctions::init(L);
 	MountFunctions::init(L);
@@ -5036,5 +5047,114 @@ int PlayerFunctions::luaPlayerResetOldCharms(lua_State* L) {
 
 	player->resetOldCharms();
 	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+// Strain System Functions
+int PlayerFunctions::luaPlayerActivateStrain(lua_State* L) {
+	// player:activateStrain()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, player->getStrainSystem().activate());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerDeactivateStrain(lua_State* L) {
+	// player:deactivateStrain()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->getStrainSystem().deactivate();
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsStrainActive(lua_State* L) {
+	// player:isStrainActive()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, player->getStrainSystem().isActive());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetStrainValue(lua_State* L) {
+	// player:getStrainValue()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getStrainSystem().getStrainValue());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddStrain(lua_State* L) {
+	// player:addStrain(amount)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const double amount = Lua::getNumber<double>(L, 2, 0.0);
+	if (amount <= 0.0) {
+		Lua::reportErrorFunc("Invalid strain amount. Must be greater than 0.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->getStrainSystem().addStrain(amount);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveStrain(lua_State* L) {
+	// player:removeStrain(amount)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const double amount = Lua::getNumber<double>(L, 2, 0.0);
+	if (amount <= 0.0) {
+		Lua::reportErrorFunc("Invalid strain amount. Must be greater than 0.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->getStrainSystem().removeStrain(amount);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetStrainLevel(lua_State* L) {
+	// player:getStrainLevel()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Lua::pushNumber(L, static_cast<lua_Number>(player->getStrainSystem().getCurrentLevel()));
 	return 1;
 }
