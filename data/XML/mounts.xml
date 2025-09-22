@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mounts>
 	<mount id="1" clientid="368" name="Widow Queen" speed="10" premium="yes" type="quest" />
-	<mount id="2" clientid="369" name="Racing Bird" speed="10" premium="yes" type="quest" />
+	<!-- <mount id="2" clientid="369" name="Racing Bird" speed="10" premium="yes" type="quest" />
 	<mount id="3" clientid="370" name="War Bear" speed="10" premium="yes" type="quest" />
 	<mount id="4" clientid="371" name="Black Sheep" speed="10" premium="yes" type="quest" />
 	<mount id="5" clientid="372" name="Midnight Panther" speed="10" premium="yes" type="quest" />
@@ -234,5 +234,5 @@
 	<mount id="232" clientid="1810" name="Primal Demonosaur" speed="10" premium="no" type="quest" />
 	<mount id="233" clientid="1833" name="Night Locust" speed="10" premium="no" type="store" />
 	<mount id="234" clientid="1834" name="Leaf Locust" speed="10" premium="no" type="store" />
-	<mount id="235" clientid="1835" name="Pearl Locust" speed="10" premium="no" type="store" />
+	<mount id="235" clientid="1835" name="Pearl Locust" speed="10" premium="no" type="store" /> -->
 </mounts>

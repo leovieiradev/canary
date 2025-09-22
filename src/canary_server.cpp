@@ -339,9 +339,9 @@ void CanaryServer::validateDatapack() {
 	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
 	const auto datapackName = g_configManager().getString(DATA_DIRECTORY);
 
-	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
+	if (!useAnyDatapack && datapackName != "data-naruto" && datapackName != "data-otservbr-global") {
 		throw FailedToInitializeCanary(fmt::format(
-			"The datapack folder name '{}' is wrong. Valid names: 'data-canary', "
+			"The datapack folder name '{}' is wrong. Valid names: 'data-naruto', "
 			"'data-otservbr-global', or set USE_ANY_DATAPACK_FOLDER = true in config.lua.",
 			datapackName
 		));
