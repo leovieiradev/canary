@@ -401,3 +401,12 @@ database_backup
 # CLION
 cmake-build-*
 compile_commands.json
+data-canary/world/otservbr.otbm
+data-canary/world/koetemap.otbm
+data-otservbr-global.zip
+data-canary/world/koetemap.otbm.otbm
+data/items/appearances.dat
+generate_canary.mdc
+readMisisom.md
+data/items/appearances.dat
+data/items/appearances.dat
