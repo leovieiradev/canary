@@ -62,8 +62,14 @@ bool SharinganSystem::unlock() {
     
     updateEyeSlotItem(); // Atualiza o item do slot Eye
     
+    // Ativa automaticamente o Sharingan quando desbloqueado
+    isActive_ = true;
+    lastActivationTime_ = getCurrentTime();
+    
     sendSharinganMessage("Parabéns! Você desbloqueou o Sharingan com 1 Tomoe!");
-    g_logger().info("[SharinganSystem] Player {} unlocked Sharingan", player->getName());
+    sendSharinganMessage("Sharingan ativado automaticamente!");
+    updateSharinganEffects();
+    g_logger().info("[SharinganSystem] Player {} unlocked and activated Sharingan", player->getName());
     
     return true;
 }
@@ -94,6 +100,11 @@ bool SharinganSystem::activate() {
     lastActivationTime_ = getCurrentTime();
     incrementUsage();
     
+    // Ativar o StrainSystem quando o Sharingan for ativado
+    auto& strainSystem = player->getStrainSystem();
+    strainSystem.setSharinganLevel(getLevelNumber());
+    strainSystem.activate();
+    
     sendSharinganMessage("Sharingan ativado! Seus olhos brilham com poder.");
     updateSharinganEffects();
     g_logger().info("[SharinganSystem] Player {} activated Sharingan level {}", 
@@ -115,6 +126,10 @@ bool SharinganSystem::deactivate() {
     }
 
     isActive_ = false;
+    
+    // Desativar o StrainSystem quando o Sharingan for desativado
+    auto& strainSystem = player->getStrainSystem();
+    strainSystem.deactivate();
     
     sendSharinganMessage("Sharingan desativado.");
     g_logger().info("[SharinganSystem] Player {} deactivated Sharingan", player->getName());

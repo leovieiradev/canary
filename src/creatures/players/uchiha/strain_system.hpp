@@ -47,6 +47,7 @@ namespace Uchiha {
         
         // Setters para persistência
         void setStrainValue(uint8_t value) { strainValue_ = value; }
+        void setSharinganLevel(uint8_t sharinganLevel);
         
         // Métodos de utilidade
         bool canActivate() const;

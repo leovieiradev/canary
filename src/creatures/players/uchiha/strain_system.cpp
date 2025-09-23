@@ -260,13 +260,44 @@ void StrainSystem::sendStrainMessage(const std::string& message) const {
 }
 
 void StrainSystem::updateStrainEffects() {
-    // Por enquanto, apenas log dos efeitos
-    // Aqui implementaremos os buffs/penalidades no futuro
     auto player = getPlayer();
-    if (player) {
-        g_logger().debug("[StrainSystem] Player {} strain effects updated (level: {}, value: {})", 
-                        player->getName(), static_cast<int>(getStrainLevelNumber()), strainValue_);
+    if (!player) {
+        return;
     }
+    
+    StrainLevel currentLevel = getStrainLevel();
+    
+    // Remover efeitos anteriores de strain (se houver)
+    // TODO: Implementar remoção de condições específicas de strain
+    
+    switch (currentLevel) {
+        case StrainLevel::BAIXO:
+            // Buffs leves: +5% esquiva, +3% velocidade de ataque
+            sendStrainMessage("Strain Baixo: Seus reflexos estão aprimorados!");
+            // TODO: Aplicar buffs de esquiva e velocidade
+            break;
+            
+        case StrainLevel::MEDIO:
+            // Penalidades começam: +10% custo de mana, -2% velocidade
+            sendStrainMessage("Strain Médio: Seus olhos começam a doer...");
+            // TODO: Aplicar penalidades de mana e velocidade
+            break;
+            
+        case StrainLevel::ALTO:
+            // Penalidades severas: +25% custo de mana, -5% velocidade, visão turva
+            sendStrainMessage("Strain Alto: Sua visão está ficando turva!");
+            // TODO: Aplicar penalidades severas
+            break;
+            
+        case StrainLevel::CRITICO:
+            // Penalidades críticas: +50% custo de mana, -10% velocidade, risco de desmaio
+            sendStrainMessage("Strain Crítico: PERIGO! Seus olhos estão sangrando!");
+            // TODO: Aplicar penalidades críticas e risco de desmaio
+            break;
+    }
+    
+    g_logger().info("[StrainSystem] Player {} strain effects updated (level: {}, value: {})", 
+                   player->getName(), static_cast<int>(getStrainLevelNumber()), strainValue_);
 }
 
 void StrainSystem::onThink() {
@@ -274,8 +305,19 @@ void StrainSystem::onThink() {
     
     if (isActive_) {
         // Sistema ativo: progressão automática baseada no nível do Sharingan
-        // Por enquanto, usando uma variável local para simular o nível do Sharingan
-        uint8_t sharinganLevel = 1; // TODO: Implementar sistema de Sharingan real
+        auto player = getPlayer();
+        if (!player) {
+            return;
+        }
+        
+        auto* sharinganSystem = player->getSharinganSystem();
+        if (!sharinganSystem || !sharinganSystem->isActive()) {
+            // Se o Sharingan não estiver ativo, desativar o strain
+            deactivate();
+            return;
+        }
+        
+        uint8_t sharinganLevel = sharinganSystem->getLevelNumber();
         
         // Progressão baseada no nível (exemplo: nível 1 = +1 strain/10s, nível 2 = +1 strain/8s, etc.)
         uint32_t progressionInterval = 10 - (sharinganLevel - 1) * 2; // 10s, 8s, 6s, 4s...
@@ -321,6 +363,44 @@ void StrainSystem::onThink() {
 
 uint32_t StrainSystem::getCurrentTime() const {
     return static_cast<uint32_t>(OTSYS_TIME() / 1000);
+}
+
+void StrainSystem::setSharinganLevel(uint8_t sharinganLevel) {
+    // Mapear níveis do Sharingan para níveis de Strain
+    // TOMOE_1 = 1 -> BAIXO (0-25)
+    // TOMOE_2 = 2 -> MEDIO (26-50) 
+    // TOMOE_3 = 3 -> ALTO (51-75)
+    // MANGEKYOU = 4 -> CRITICO (76-100)
+    
+    uint8_t targetStrainValue = 0;
+    
+    switch (sharinganLevel) {
+        case 1: // TOMOE_1
+            targetStrainValue = 12; // Meio do range BAIXO (0-25)
+            break;
+        case 2: // TOMOE_2
+            targetStrainValue = 38; // Meio do range MEDIO (26-50)
+            break;
+        case 3: // TOMOE_3
+            targetStrainValue = 63; // Meio do range ALTO (51-75)
+            break;
+        case 4: // MANGEKYOU
+            targetStrainValue = 88; // Meio do range CRITICO (76-100)
+            break;
+        default:
+            targetStrainValue = 0; // LOCKED
+            break;
+    }
+    
+    strainValue_ = targetStrainValue;
+    
+    auto player = getPlayer();
+    if (player) {
+        g_logger().info("[StrainSystem] Player {} strain level set to {} for Sharingan level {}", 
+                       player->getName(), targetStrainValue, sharinganLevel);
+    }
+    
+    updateStrainEffects();
 }
 
 } // namespace Uchiha

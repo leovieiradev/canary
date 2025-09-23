@@ -62,7 +62,7 @@ function activateSharingan.onSay(player, words, param)
 
     if player:activateSharingan() then
         player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Sharingan ativado! Nível: " .. player:getSharinganLevel())
-        player:sendMagicEffect(player:getPosition(), CONST_ME_MAGIC_RED)
+        player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
     else
         player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Falha ao ativar o Sharingan.")
     end
@@ -89,7 +89,7 @@ function deactivateSharingan.onSay(player, words, param)
 
     player:deactivateSharingan()
     player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Sharingan desativado.")
-    player:sendMagicEffect(player:getPosition(), CONST_ME_MAGIC_BLUE)
+    player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
     return false
 end
 
