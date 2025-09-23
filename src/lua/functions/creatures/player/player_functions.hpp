@@ -406,6 +406,15 @@ class PlayerFunctions {
 	static int luaPlayerRemoveStrain(lua_State* L);
 	static int luaPlayerGetStrainLevel(lua_State* L);
 
+	// Sharingan System Functions
+	static int luaPlayerUnlockSharingan(lua_State* L);
+	static int luaPlayerGetSharinganLevel(lua_State* L);
+	static int luaPlayerIncreaseSharinganLevel(lua_State* L);
+	static int luaPlayerIsSharinganUnlocked(lua_State* L);
+	static int luaPlayerActivateSharingan(lua_State* L);
+	static int luaPlayerDeactivateSharingan(lua_State* L);
+	static int luaPlayerIsSharinganActive(lua_State* L);
+
 
 
 	friend class CreatureFunctions;

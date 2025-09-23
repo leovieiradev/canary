@@ -78,7 +78,8 @@ Player::Player() :
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
 	m_storage(*this),
-	m_strainSystem() {
+	m_strainSystem(),
+	m_sharinganSystem() {
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -95,7 +96,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
 	m_storage(*this),
-	m_strainSystem() {
+	m_strainSystem(),
+	m_sharinganSystem() {
 	m_wheelPlayer.init();
 	m_animusMastery.init();
 }

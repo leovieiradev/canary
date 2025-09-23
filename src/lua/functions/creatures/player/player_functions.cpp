@@ -422,6 +422,15 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "removeStrain", PlayerFunctions::luaPlayerRemoveStrain);
 	Lua::registerMethod(L, "Player", "getStrainLevel", PlayerFunctions::luaPlayerGetStrainLevel);
 
+	// Sharingan System Functions
+	Lua::registerMethod(L, "Player", "unlockSharingan", PlayerFunctions::luaPlayerUnlockSharingan);
+	Lua::registerMethod(L, "Player", "getSharinganLevel", PlayerFunctions::luaPlayerGetSharinganLevel);
+	Lua::registerMethod(L, "Player", "increaseSharinganLevel", PlayerFunctions::luaPlayerIncreaseSharinganLevel);
+	Lua::registerMethod(L, "Player", "isSharinganUnlocked", PlayerFunctions::luaPlayerIsSharinganUnlocked);
+	Lua::registerMethod(L, "Player", "activateSharingan", PlayerFunctions::luaPlayerActivateSharingan);
+	Lua::registerMethod(L, "Player", "deactivateSharingan", PlayerFunctions::luaPlayerDeactivateSharingan);
+	Lua::registerMethod(L, "Player", "isSharinganActive", PlayerFunctions::luaPlayerIsSharinganActive);
+
 
 
 	GroupFunctions::init(L);
@@ -5156,5 +5165,147 @@ int PlayerFunctions::luaPlayerGetStrainLevel(lua_State* L) {
 	}
 
 	Lua::pushNumber(L, static_cast<lua_Number>(player->getStrainSystem().getCurrentLevel()));
+	return 1;
+}
+
+// Sharingan System Functions
+int PlayerFunctions::luaPlayerUnlockSharingan(lua_State* L) {
+	// player:unlockSharingan()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	auto* sharinganSystem = player->getSharinganSystem();
+	if (!sharinganSystem) {
+		Lua::reportErrorFunc("SharinganSystem not found for player.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, sharinganSystem->unlock());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetSharinganLevel(lua_State* L) {
+	// player:getSharinganLevel()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto* sharinganSystem = player->getSharinganSystem();
+	if (!sharinganSystem) {
+		Lua::reportErrorFunc("SharinganSystem not found for player.");
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Lua::pushNumber(L, static_cast<lua_Number>(sharinganSystem->getLevel()));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIncreaseSharinganLevel(lua_State* L) {
+	// player:increaseSharinganLevel()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	auto* sharinganSystem = player->getSharinganSystem();
+	if (!sharinganSystem) {
+		Lua::reportErrorFunc("SharinganSystem not found for player.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, sharinganSystem->increaseLevel());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsSharinganUnlocked(lua_State* L) {
+	// player:isSharinganUnlocked()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	auto* sharinganSystem = player->getSharinganSystem();
+	if (!sharinganSystem) {
+		Lua::reportErrorFunc("SharinganSystem not found for player.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, sharinganSystem->isUnlocked());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerActivateSharingan(lua_State* L) {
+	// player:activateSharingan()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	auto* sharinganSystem = player->getSharinganSystem();
+	if (!sharinganSystem) {
+		Lua::reportErrorFunc("SharinganSystem not found for player.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, sharinganSystem->activate());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerDeactivateSharingan(lua_State* L) {
+	// player:deactivateSharingan()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	auto* sharinganSystem = player->getSharinganSystem();
+	if (!sharinganSystem) {
+		Lua::reportErrorFunc("SharinganSystem not found for player.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	sharinganSystem->deactivate();
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsSharinganActive(lua_State* L) {
+	// player:isSharinganActive()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	auto* sharinganSystem = player->getSharinganSystem();
+	if (!sharinganSystem) {
+		Lua::reportErrorFunc("SharinganSystem not found for player.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, sharinganSystem->isActive());
 	return 1;
 }

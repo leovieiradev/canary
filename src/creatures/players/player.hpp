@@ -29,6 +29,7 @@
 #include "creatures/players/components/wheel/wheel_gems.hpp"
 #include "creatures/players/components/player_attached_effects.hpp"
 #include "creatures/players/uchiha/strain_system.hpp"
+#include "creatures/players/uchiha/sharingan_system.hpp"
 
 class House;
 class NetworkMessage;
@@ -414,6 +415,17 @@ public:
 	}
 	const Uchiha::StrainSystem& getStrainSystem() const {
 		return m_strainSystem;
+	}
+
+	// Sharingan System methods
+	Uchiha::SharinganSystem* getSharinganSystem() {
+		return &m_sharinganSystem;
+	}
+	const Uchiha::SharinganSystem* getSharinganSystem() const {
+		return &m_sharinganSystem;
+	}
+	bool hasSharinganSystem() const {
+		return true; // Sempre disponível, mas pode estar bloqueado
 	}
 
 
@@ -1736,6 +1748,7 @@ private:
 	PlayerAttachedEffects m_playerAttachedEffects;
 	PlayerStorage m_storage;
 	Uchiha::StrainSystem m_strainSystem;
+	Uchiha::SharinganSystem m_sharinganSystem;
 
 	std::mutex quickLootMutex;
 

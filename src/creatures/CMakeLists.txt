@@ -24,6 +24,7 @@ target_sources(
             players/management/waitlist.cpp
             players/storages/storages.cpp
             players/uchiha/strain_system.cpp
+            players/uchiha/sharingan_system.cpp
             players/player.cpp
             players/components/player_achievement.cpp
             players/components/player_attached_effects.cpp

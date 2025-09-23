@@ -1004,6 +1004,9 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 	// Initialize StrainSystem
 	player->getStrainSystem().initialize(player);
 	
+	// Initialize SharinganSystem
+	player->getSharinganSystem()->initialize(player);
+	
 	// Load strain system data after initialization
 	Database &db = Database::getInstance();
 	std::ostringstream strainQuery;
