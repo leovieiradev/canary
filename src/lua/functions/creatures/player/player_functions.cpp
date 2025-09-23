@@ -5194,18 +5194,18 @@ int PlayerFunctions::luaPlayerGetSharinganLevel(lua_State* L) {
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		lua_pushnil(L);
+		Lua::pushNumber(L, 0);
 		return 1;
 	}
 
 	auto* sharinganSystem = player->getSharinganSystem();
 	if (!sharinganSystem) {
 		Lua::reportErrorFunc("SharinganSystem not found for player.");
-		lua_pushnil(L);
+		Lua::pushNumber(L, 0);
 		return 1;
 	}
 
-	Lua::pushNumber(L, static_cast<lua_Number>(sharinganSystem->getLevel()));
+	Lua::pushNumber(L, static_cast<lua_Number>(sharinganSystem->getLevelNumber()));
 	return 1;
 }
 
@@ -5285,8 +5285,7 @@ int PlayerFunctions::luaPlayerDeactivateSharingan(lua_State* L) {
 		return 1;
 	}
 
-	sharinganSystem->deactivate();
-	Lua::pushBoolean(L, true);
+	Lua::pushBoolean(L, sharinganSystem->deactivate());
 	return 1;
 }
 

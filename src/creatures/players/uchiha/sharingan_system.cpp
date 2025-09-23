@@ -8,25 +8,36 @@
  */
 
 #include "sharingan_system.hpp"
+
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "lib/logging/logger.hpp"
 #include "utils/utils_definitions.hpp"
+
 #include <string>
 
 namespace Uchiha {
 
-SharinganSystem::SharinganSystem(Player* player) : player_() {
-    // Não usar shared_from_this() no construtor
+SharinganSystem::SharinganSystem(Player* player) 
+    : player_(), level_(SharinganLevel::LOCKED), experience_(0), 
+      usageCount_(0), isActive_(false), lastActivationTime_(0) {
+    // Não usar shared_from_this() no construtor - inicialização via initialize()
 }
 
 void SharinganSystem::initialize(std::shared_ptr<Player> player) {
+    if (!player) {
+        g_logger().error("[SharinganSystem] Tentativa de inicializar com player nulo");
+        return;
+    }
+    
     player_ = std::weak_ptr<Player>(player);
     level_ = SharinganLevel::LOCKED;
     experience_ = 0;
     usageCount_ = 0;
     isActive_ = false;
     lastActivationTime_ = 0;
+    
+    g_logger().debug("[SharinganSystem] Sistema inicializado para player {}", player->getName());
 }
 
 std::shared_ptr<Player> SharinganSystem::getPlayer() const {
@@ -56,6 +67,12 @@ bool SharinganSystem::unlock() {
 bool SharinganSystem::activate() {
     auto player = getPlayer();
     if (!player) {
+        g_logger().warn("[SharinganSystem] Tentativa de ativar Sharingan com player inválido");
+        return false;
+    }
+
+    if (!isUnlocked()) {
+        sendSharinganMessage("Você precisa desbloquear o Sharingan primeiro!");
         return false;
     }
 
@@ -84,6 +101,7 @@ bool SharinganSystem::activate() {
 bool SharinganSystem::deactivate() {
     auto player = getPlayer();
     if (!player) {
+        g_logger().warn("[SharinganSystem] Tentativa de desativar Sharingan com player inválido");
         return false;
     }
 
@@ -103,6 +121,7 @@ bool SharinganSystem::deactivate() {
 bool SharinganSystem::increaseLevel() {
     auto player = getPlayer();
     if (!player) {
+        g_logger().warn("[SharinganSystem] Tentativa de aumentar nível com player inválido");
         return false;
     }
 
@@ -118,8 +137,10 @@ bool SharinganSystem::increaseLevel() {
 
     if (!canEvolve()) {
         uint32_t requiredExp = getRequiredExperienceForLevel(getLevelNumber() + 1);
-        sendSharinganMessage("Você precisa de " + std::to_string(requiredExp - experience_) + 
-                           " pontos de experiência para evoluir!");
+        if (requiredExp > experience_) {
+            sendSharinganMessage("Você precisa de " + std::to_string(requiredExp - experience_) + 
+                               " pontos de experiência para evoluir!");
+        }
         return false;
     }
 
@@ -137,11 +158,21 @@ bool SharinganSystem::increaseLevel() {
 }
 
 bool SharinganSystem::addExperience(uint32_t amount) {
-    if (amount == 0 || !isUnlocked()) {
+    if (amount == 0) {
+        return false;
+    }
+    
+    if (!isUnlocked()) {
+        g_logger().debug("[SharinganSystem] Tentativa de adicionar experiência com Sharingan bloqueado");
         return false;
     }
 
-    experience_ += amount;
+    // Verificar overflow
+    if (experience_ > UINT32_MAX - amount) {
+        experience_ = UINT32_MAX;
+    } else {
+        experience_ += amount;
+    }
     
     auto player = getPlayer();
     if (player) {
@@ -193,8 +224,9 @@ uint32_t SharinganSystem::getRequiredExperienceForLevel(uint8_t targetLevel) con
     }
 }
 
-void SharinganSystem::setLevel(uint8_t level) {
+void SharinganSystem::setLevel(uint8_t level) noexcept {
     if (level > 3) {
+        g_logger().warn("[SharinganSystem] Tentativa de definir nível inválido: {}, limitando a 3", level);
         level = 3;
     }
     level_ = static_cast<SharinganLevel>(level);
@@ -204,15 +236,18 @@ bool SharinganSystem::canActivate() const {
     return isUnlocked() && !isActive_;
 }
 
-uint32_t SharinganSystem::getTimeSinceLastActivation() const {
+uint32_t SharinganSystem::getTimeSinceLastActivation() const noexcept {
     if (lastActivationTime_ == 0) {
         return 0;
     }
     return getCurrentTime() - lastActivationTime_;
 }
 
-void SharinganSystem::incrementUsage() {
-    usageCount_++;
+void SharinganSystem::incrementUsage() noexcept {
+    // Verificar overflow
+    if (usageCount_ < UINT32_MAX) {
+        usageCount_++;
+    }
     
     // Ganhar experiência por uso (pequena quantidade)
     if (isUnlocked()) {
@@ -253,16 +288,15 @@ void SharinganSystem::updateSharinganEffects() {
     // Aqui podem ser adicionados efeitos visuais ou de gameplay
     // Por exemplo: mudança de outfit, efeitos mágicos, etc.
     // Por enquanto, apenas log
-    g_logger().debug("[SharinganSystem] Updated effects for player {} with level {}", 
-                    player->getName(), static_cast<int>(level_));
+    g_logger().debug("[SharinganSystem] Updating Sharingan effects for player {}", player->getName());
 }
 
-uint32_t SharinganSystem::getCurrentTime() const {
+uint32_t SharinganSystem::getCurrentTime() const noexcept {
     return static_cast<uint32_t>(OTSYS_TIME() / 1000);
 }
 
-bool SharinganSystem::validateLevel() const {
-    return level_ >= SharinganLevel::LOCKED && level_ <= SharinganLevel::TOMOE_3;
+bool SharinganSystem::validateLevel() const noexcept {
+    return static_cast<uint8_t>(level_) <= 3;
 }
 
 }

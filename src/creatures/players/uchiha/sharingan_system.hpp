@@ -9,7 +9,9 @@
 
 #pragma once
 
+#include <cstdint>
 #include <memory>
+#include <string>
 
 class Player;
 
@@ -39,8 +41,8 @@ namespace Uchiha {
         bool unlock();
         bool activate();
         bool deactivate();
-        bool isActive() const { return isActive_; }
-        bool isUnlocked() const { return level_ != SharinganLevel::LOCKED; }
+        bool isActive() const noexcept { return isActive_; }
+        bool isUnlocked() const noexcept { return level_ != SharinganLevel::LOCKED; }
         
         // Métodos de progressão
         bool increaseLevel();
@@ -48,23 +50,23 @@ namespace Uchiha {
         bool canEvolve() const;
         
         // Getters
-        SharinganLevel getLevel() const { return level_; }
-        uint8_t getLevelNumber() const { return static_cast<uint8_t>(level_); }
+        SharinganLevel getLevel() const noexcept { return level_; }
+        uint8_t getLevelNumber() const noexcept { return static_cast<uint8_t>(level_); }
         std::string getLevelName() const;
-        uint32_t getExperience() const { return experience_; }
-        uint32_t getUsageCount() const { return usageCount_; }
+        uint32_t getExperience() const noexcept { return experience_; }
+        uint32_t getUsageCount() const noexcept { return usageCount_; }
         uint32_t getRequiredExperienceForLevel(uint8_t targetLevel) const;
         
         // Setters para persistência
-        void setLevel(SharinganLevel level) { level_ = level; }
-        void setLevel(uint8_t level);
-        void setExperience(uint32_t experience) { experience_ = experience; }
-        void setUsageCount(uint32_t count) { usageCount_ = count; }
+        void setLevel(SharinganLevel level) noexcept { level_ = level; }
+        void setLevel(uint8_t level) noexcept;
+        void setExperience(uint32_t experience) noexcept { experience_ = experience; }
+        void setUsageCount(uint32_t count) noexcept { usageCount_ = count; }
         
         // Métodos de utilidade
         bool canActivate() const;
-        uint32_t getTimeSinceLastActivation() const;
-        void incrementUsage();
+        uint32_t getTimeSinceLastActivation() const noexcept;
+        void incrementUsage() noexcept;
         
         // Métodos de informação
         std::string getSharinganInfo() const;
@@ -73,7 +75,7 @@ namespace Uchiha {
         std::shared_ptr<Player> getPlayer() const;
         void sendSharinganMessage(const std::string& message) const;
         void updateSharinganEffects();
-        uint32_t getCurrentTime() const;
-        bool validateLevel() const;
+        uint32_t getCurrentTime() const noexcept;
+        bool validateLevel() const noexcept;
     };
 }
