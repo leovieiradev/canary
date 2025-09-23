@@ -3320,6 +3320,8 @@ ObjectCategory_t Game::getObjectCategory(const ItemType &it) {
 			category = OBJECTCATEGORY_BOOTS;
 		} else if ((it.slotPosition & SLOTP_RING) != 0) {
 			category = OBJECTCATEGORY_RINGS;
+		} else if ((it.slotPosition & SLOTP_EYE) != 0) {
+			category = OBJECTCATEGORY_EYES;
 		}
 	} else if (it.type == ITEM_TYPE_RUNE) {
 		category = OBJECTCATEGORY_RUNES;

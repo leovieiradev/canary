@@ -37,6 +37,8 @@ void SharinganSystem::initialize(std::shared_ptr<Player> player) {
     isActive_ = false;
     lastActivationTime_ = 0;
     
+    ensureEyeSlotItem(); // Garante que o jogador tenha um item no slot Eye
+    
     g_logger().debug("[SharinganSystem] Sistema inicializado para player {}", player->getName());
 }
 
@@ -57,6 +59,8 @@ bool SharinganSystem::unlock() {
 
     level_ = SharinganLevel::TOMOE_1;
     experience_ = 0;
+    
+    updateEyeSlotItem(); // Atualiza o item do slot Eye
     
     sendSharinganMessage("Parabéns! Você desbloqueou o Sharingan com 1 Tomoe!");
     g_logger().info("[SharinganSystem] Player {} unlocked Sharingan", player->getName());
@@ -148,6 +152,9 @@ bool SharinganSystem::increaseLevel() {
     std::string oldLevelName = getLevelName();
     level_ = static_cast<SharinganLevel>(static_cast<uint8_t>(level_) + 1);
     std::string newLevelName = getLevelName();
+    
+    updateEyeSlotItem(); // Atualiza o item do slot Eye
+    
     std::string message = "Seu Sharingan evoluiu de " + oldLevelName + " para " + newLevelName + "!";
     sendSharinganMessage(message);
     
@@ -297,6 +304,91 @@ uint32_t SharinganSystem::getCurrentTime() const noexcept {
 
 bool SharinganSystem::validateLevel() const noexcept {
     return static_cast<uint8_t>(level_) <= 3;
+}
+
+// Métodos de gerenciamento do slot Eye
+void SharinganSystem::updateEyeSlotItem() {
+    auto player = getPlayer();
+    if (!player) {
+        return;
+    }
+
+    uint16_t newItemId = getEyeItemIdForLevel();
+    auto currentItem = player->getInventoryItem(CONST_SLOT_EYE);
+    
+    // Se já tem o item correto, não faz nada
+    if (currentItem && currentItem->getID() == newItemId) {
+        return;
+    }
+
+    // Remove o item atual se existir
+    if (currentItem) {
+        g_game().internalRemoveItem(currentItem, currentItem->getItemCount());
+    }
+
+    // Adiciona o novo item
+    auto newItem = Item::CreateItem(newItemId);
+    if (newItem) {
+        g_game().internalPlayerAddItem(player, newItem, false, CONST_SLOT_EYE);
+        g_logger().debug("[SharinganSystem] Updated eye slot item to ID {} for player {}", 
+                        newItemId, player->getName());
+    }
+}
+
+uint16_t SharinganSystem::getEyeItemIdForLevel() const {
+    switch (level_) {
+        case SharinganLevel::LOCKED:
+            return 36311; // Normal eye
+        case SharinganLevel::TOMOE_1:
+            return 36312; // 1 tomoe sharingan
+        case SharinganLevel::TOMOE_2:
+            return 36313; // 2 tomoe sharingan
+        case SharinganLevel::TOMOE_3:
+            return 36314; // 3 tomoe sharingan
+        default:
+            return 36311; // Normal eye como fallback
+    }
+}
+
+bool SharinganSystem::onEyeItemClick() {
+    auto player = getPlayer();
+    if (!player) {
+        return false;
+    }
+
+    // Se não tem Sharingan desbloqueado, não faz nada
+    if (!isUnlocked()) {
+        sendSharinganMessage("Você não possui o Sharingan desbloqueado.");
+        return false;
+    }
+
+    // Se está ativo, desativa
+    if (isActive_) {
+        return deactivate();
+    } else {
+        // Se não está ativo, tenta ativar
+        return activate();
+    }
+}
+
+void SharinganSystem::ensureEyeSlotItem() {
+    auto player = getPlayer();
+    if (!player) {
+        return;
+    }
+
+    auto currentItem = player->getInventoryItem(CONST_SLOT_EYE);
+    
+    // Se não tem item no slot, adiciona o item apropriado
+    if (!currentItem) {
+        uint16_t itemId = getEyeItemIdForLevel();
+        auto newItem = Item::CreateItem(itemId);
+        if (newItem) {
+            g_game().internalPlayerAddItem(player, newItem, false, CONST_SLOT_EYE);
+            g_logger().debug("[SharinganSystem] Ensured eye slot item ID {} for player {}", 
+                            itemId, player->getName());
+        }
+    }
 }
 
 }

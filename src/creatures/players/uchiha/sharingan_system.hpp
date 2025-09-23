@@ -71,6 +71,12 @@ namespace Uchiha {
         // Métodos de informação
         std::string getSharinganInfo() const;
         
+        // Métodos de gerenciamento do slot Eye
+        void updateEyeSlotItem();
+        uint16_t getEyeItemIdForLevel() const;
+        bool onEyeItemClick();
+        void ensureEyeSlotItem();
+        
     private:
         std::shared_ptr<Player> getPlayer() const;
         void sendSharinganMessage(const std::string& message) const;
